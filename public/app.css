@@ -1,0 +1,26 @@
+body {
+	background: #303030;
+}
+.contents {
+	width: 100%;
+	height: 500px;
+	background: #202520;
+	color: #fff;
+}
+
+.btn-start {
+	width:49%;
+	height: 50px;
+}
+
+.results-container {
+	margin-top:5px;
+}
+
+.input-url {
+	background: #202520;
+	color: #fff;
+	border: 1px solid #808080;
+	width: 100%;
+	text-align: center;
+}
