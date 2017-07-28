@@ -18,6 +18,7 @@ app.controller('appController', ['$scope', '$http',
 		$scope.start = function() {
 			$http.post('/start', $scope.params).then(function(response) {
 			}, function(response) {
+				alert('please try again');
 				console.log(response);
 			});
 			$scope.reset();
