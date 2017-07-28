@@ -11,14 +11,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
  
 app.post('/start', function (req, res) {
-	engine.start();
+	engine.start(req.body.name, req.body.url, req.body.start, req.body.end);
 	res.send('OK');
 });
 
 app.get('/clear', function(req, res) {
-	rmdirSync('public/download');
-	fs.mkdirSync('public/download');
-	touch('public/download/.gitkeep');
+	rmdirSync('download');
+	fs.mkdirSync('download');
+	touch('download/.gitkeep');
 	res.send("OK! :)");
 });
  

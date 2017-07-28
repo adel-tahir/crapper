@@ -9,6 +9,9 @@
     <script src="/app.js"></script>
   </head>
   <body ng-app="myApp" ng-controller="appController" class="text-center">  
+    <div>Unique name: <input type="text" ng-model="params.name" style="width:200px;" /></div>
+    <div>url: <input type="text" ng-model="params.url" style="width:600px;" /></div>
+    <div>start: <input type="text" ng-model="params.start" style="width:100px;" />, end: <input type="text" ng-model="params.end" style="width:100px;" /></div>
 		<input type="button" class="btn-primary btn-start" ng-click="start()" value="START"/>
   </body>
 </html>
