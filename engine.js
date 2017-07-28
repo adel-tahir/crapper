@@ -111,7 +111,7 @@ var scrape = (url, name, pageNo) => {
 		});
 	}).catch(e => {
 		console.log(e);
-		deferred.reject(e);
+		deferred.resolve(e);
 	});
 
 	return deferred.promise;
