@@ -6,7 +6,7 @@ var rmdirSync = require('rmdir-recursive-sync');
 const _ = require('lodash');
 const fs = require('fs');
 const Q = require('q');
-
+// const url = 'https://list.tmall.com/search_product.htm?spm=a220m.1000858.0.0.d811797k7Xo1C&cat=50025135&s={{#PAGE}}&q=%B3%A4%D0%E4%C1%AC%D2%C2%C8%B9&sort=s&style=g&from=.list.pc_1_searchbutton&type=pc#J_Filter';
 // const url = 'https://list.tmall.com/search_product.htm?spm=a220m.1000858.0.0.d811797tlPESO&cat=50024556&s={{#PAGE}}&q=3d%B4%F2%D3%A1%BB%FA&sort=s&style=g&from=rs_1_key-top-s&type=pc#J_Filter';
 // const url = 'https://list.tmall.com/search_product.htm?q=filament&type=p&spm=a220m.1000858.a2227oh.d100&from=.list.pc_1_searchbutton';
 exports.start = function(name, url, start, end) {
@@ -68,8 +68,8 @@ var scrape = (url, name, pageNo) => {
 
 			var imageTag = $product.find('.productImg img');
 			var imageUrl = imageTag.attr('data-ks-lazyload') ? imageTag.attr('data-ks-lazyload') : imageTag.attr('src');
-			item.image_url = 'https:' + imageUrl.replace(/_b.jpg/g, '_500x500.jpg');
-			imageUrlList.push(item.image_url);
+			item.image_url = imageUrl ? 'https:' + imageUrl.replace(/_b.jpg/g, '_500x500.jpg') : '';
+			if(item.image_url != '') imageUrlList.push(item.image_url);
 
 			var thumbs = $product.find('.productThumb');
 			item.styles = [];
@@ -79,14 +79,16 @@ var scrape = (url, name, pageNo) => {
 				_.each(styleTags, styleTag => {
 					var thumbImageTag = $(styleTag).find('img');
 					var thumbImageUrl = thumbImageTag.attr('data-ks-lazyload') ? thumbImageTag.attr('data-ks-lazyload') : thumbImageTag.attr('src');
-					thumbImageUrl = 'https:' + img.replace(/_30x30.jpg/g, '_500x500.jpg');
+					if(thumbImageUrl) {
+						thumbImageUrl = 'https:' + thumbImageUrl.replace(/_30x30.jpg/g, '_500x500.jpg');
 
-					item.styles.push({
-						sku: $(styleTag).attr('data-sku'),
-						image_url: thumbImageUrl
-					});
+						item.styles.push({
+							sku: $(styleTag).attr('data-sku'),
+							image_url: thumbImageUrl
+						});
 
-					imageUrlList.push(item.thumbImageUrl);
+						imageUrlList.push(thumbImageUrl);
+					}
 				});
 			}
 
