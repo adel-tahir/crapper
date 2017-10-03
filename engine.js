@@ -42,7 +42,15 @@ var scrape = async function (url, name, pageNo){
   await _page.property('viewportSize', { width: 1440, height: 900 });
 	await _page.setting('userAgent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36');
 	await _page.setting('loadImages', false);
- 	let _status = await _page.open(url);
+ 	let _status = await _page.open(encodeURI(url));
+
+ 	let _readyState = '';
+ 	while(_readyState != 'complete') {
+		_readyState = await _page.evaluate( function() {
+			return document.readyState;
+		});
+	}
+
  	let contents = await _page.property('content');
 
  	fs.writeFileSync('/home/ubuntu/1.txt', contents);
