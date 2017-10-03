@@ -39,9 +39,8 @@ var scrape = async function (url, name, pageNo){
 	fs.mkdirSync('download/' + name + '/' + (pageNo+1));
 	_ph = await phantom.create()
 	_page = await _ph.createPage();
-  await _page.property('viewportSize', { width: 1440, height: 900 });
-	await _page.setting('userAgent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36');
-	await _page.setting('loadImages', false);
+  // await _page.property('viewportSize', { width: 1440, height: 900 });
+	await _page.setting('userAgent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
  	let _status = await _page.open(encodeURI(url));
 
  	let _readyState = '';
@@ -53,7 +52,7 @@ var scrape = async function (url, name, pageNo){
 
  	let contents = await _page.property('content');
 
- 	fs.writeFileSync('/home/ubuntu/1.txt', contents);
+ 	// fs.writeFileSync('1.txt', contents);
 
 	_page.close();
 	_ph.exit();
