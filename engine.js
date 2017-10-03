@@ -43,6 +43,9 @@ var scrape = (url, name, pageNo) => {
     return _ph.createPage();
 	}).then(page => {
     _page = page;
+    await _page.property('viewportSize', { width: 1440, height: 900 });
+		await _page.setting('userAgent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36');
+		await _page.setting('loadImages', false);
     return _page.open(url);
 	}).then(status => {
 		return _page.property('content')
