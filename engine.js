@@ -133,12 +133,12 @@ const parse = async function(contents, name, pageNo) {
 
 	fs.writeFileSync('download/' + name + '/' + (pageNo + 1) + '/meta.json', JSON.stringify(productList));
 
-	// for(let url of imageUrlList) {
-	// 	try {
-	// 		await download(url, 'download/' + name + '/' + (pageNo + 1), {filename: url.split('/').pop()});
-	// 	}
-	// 	catch(err) { }
-	// }
+	for(let url of imageUrlList) {
+		try {
+			await download(url, 'download/' + name + '/' + (pageNo + 1), {filename: url.split('/').pop()});
+		}
+		catch(err) { }
+	}
 
 	return Promise.resolve();
 }
