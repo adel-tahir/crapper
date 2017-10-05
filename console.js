@@ -4,9 +4,6 @@ var rmdirSync = require('rmdir-sync');;
 var touch = require('touch');
 
 // clear
-rmdirSync('download');
-fs.mkdirSync('download');
-touch('download/.gitkeep');
 
 const name = process.argv[2];
 const path = process.argv[3];

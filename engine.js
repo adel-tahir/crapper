@@ -5,6 +5,7 @@ const cheerio = require('cheerio');
 var rmdirSync = require('rmdir-recursive-sync');
 const _ = require('lodash');
 const fs = require('fs');
+const { URL } = require('url');
 // const url = 'https://list.tmall.com/search_product.htm?spm=a220m.1000858.0.0.d811797k7Xo1C&cat=50025135&s={{#PAGE}}&q=%B3%A4%D0%E4%C1%AC%D2%C2%C8%B9&sort=s&style=g&from=.list.pc_1_searchbutton&type=pc#J_Filter';
 exports.start = async function(name, url, start, end) {
 	start = parseInt(start) || 0;
@@ -42,7 +43,8 @@ exports.startByFile = async function(name, path, start, end) {
 	for(var page = start; page <= end; page++) {
 		console.log('page # ' + (page+1) + ' started...');
 		try {
-			let contents = await fs.readFile(path + '/' + (page+1) + '.html');
+			let contents = fs.readFileSync(path + '/' + (page+1) + '.html', 'utf8');
+			console.log(contents);
 			await parse(contents, name, page);
 		}
 		catch(err) {
@@ -131,12 +133,12 @@ const parse = async function(contents, name, pageNo) {
 
 	fs.writeFileSync('download/' + name + '/' + (pageNo + 1) + '/meta.json', JSON.stringify(productList));
 
-	for(let url of imageUrlList) {
-		try {
-			await download(url, 'download/' + name + '/' + (pageNo + 1), {filename: url.split('/').pop()});
-		}
-		catch(err) { }
-	}
+	// for(let url of imageUrlList) {
+	// 	try {
+	// 		await download(url, 'download/' + name + '/' + (pageNo + 1), {filename: url.split('/').pop()});
+	// 	}
+	// 	catch(err) { }
+	// }
 
 	return Promise.resolve();
 }
