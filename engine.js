@@ -78,6 +78,7 @@ const scrape = async function (url, name, pageNo){
 
  	return Promise.resolve(contents);
 }
+module.exports.scrape = scrape;
 
 const parse = async function(contents, name, pageNo) {
 
