@@ -44,7 +44,6 @@ exports.startByFile = async function(name, path, start, end) {
 		console.log('page # ' + (page+1) + ' started...');
 		try {
 			let contents = fs.readFileSync(path + '/' + (page+1) + '.html', 'utf8');
-			console.log(contents);
 			await parse(contents, name, page);
 		}
 		catch(err) {
