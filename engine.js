@@ -6,8 +6,10 @@ var rmdirSync = require('rmdir-recursive-sync');
 const _ = require('lodash');
 const fs = require('fs');
 // const url = 'https://list.tmall.com/search_product.htm?spm=a220m.1000858.0.0.d811797k7Xo1C&cat=50025135&s={{#PAGE}}&q=%B3%A4%D0%E4%C1%AC%D2%C2%C8%B9&sort=s&style=g&from=.list.pc_1_searchbutton&type=pc#J_Filter';
-// const url = 'https://list.tmall.com/search_product.htm?spm=a220m.1000858.0.0.d811797tlPESO&cat=50024556&s={{#PAGE}}&q=3d%B4%F2%D3%A1%BB%FA&sort=s&style=g&from=rs_1_key-top-s&type=pc#J_Filter';
-// const url = 'https://list.tmall.com/search_product.htm?q=filament&type=p&spm=a220m.1000858.a2227oh.d100&from=.list.pc_1_searchbutton';
+
+exports.scrape = scrape;
+exports.parse = parse;
+
 exports.start = async function(name, url, start, end) {
 	start = parseInt(start) || 0;
 	end = parseInt(end) || 99;
@@ -18,25 +20,47 @@ exports.start = async function(name, url, start, end) {
 	fs.mkdirSync('download/' + name);
 	console.log('started(from ' + start + ' to ' + end + ')...');
 	for(var page = start; page <= end; page++) {
+		console.log('page # ' + (page+1) + ' started...');
 		try {
-			await scrape(url.replace(/{{#PAGE}}/g, page * incre), name, page);
+			let contents = await scrape(url.replace(/{{#PAGE}}/g, page * incre), name, page);
+			await parse(contents, name, page);
 		}
 		catch(err) {
 			console.log(err);
 		}
+		console.log('page # ' + (page+1) + ' completed.');
 	}
 	console.log('completed.');
 	return Promise.resolve();
 };
 
-var scrape = async function (url, name, pageNo){
+exports.startByFile = async function(name, path, start, end) {
+	start = parseInt(start) || 0;
+	end = parseInt(end) || 99;
+	const incre = 60;
+	if(fs.existsSync('download/' + name)) {
+		rmdirSync('download/' + name);
+	}
+	fs.mkdirSync('download/' + name);
+	console.log('started(from ' + start + ' to ' + end + ')...');
+	for(var page = start; page <= end; page++) {
+		console.log('page # ' + (page+1) + ' started...');
+		try {
+			let contents = await fs.readFile(path + '/' + (page+1) + '.html');
+			await parse(contents, name, page);
+		}
+		catch(err) {
+			console.log(err);
+		}
+		console.log('page # ' + (page+1) + ' completed.');
+	}
+	console.log('completed.');
+	return Promise.resolve();
+};
+
+const scrape = async function (url, name, pageNo){
 
 	var _ph, _page, _outObj;
-	console.log('page # ' + (pageNo+1) + ' started...');
-	if(fs.existsSync('download/' + name + '/' + (pageNo+1))) {
-		rmdirSync('download/' + name + '/' + (pageNo+1));
-	}
-	fs.mkdirSync('download/' + name + '/' + (pageNo+1));
 	_ph = await phantom.create()
 	_page = await _ph.createPage();
   // await _page.property('viewportSize', { width: 1440, height: 900 });
@@ -52,10 +76,18 @@ var scrape = async function (url, name, pageNo){
 
  	let contents = await _page.property('content');
 
- 	// fs.writeFileSync('1.txt', contents);
-
 	_page.close();
 	_ph.exit();
+
+ 	return Promise.resolve(contents);
+}
+
+const parse = async function(contents, name, pageNo) {
+
+	if(fs.existsSync('download/' + name + '/' + (pageNo+1))) {
+		rmdirSync('download/' + name + '/' + (pageNo+1));
+	}
+	fs.mkdirSync('download/' + name + '/' + (pageNo+1));
 
 	const $ = cheerio.load(contents);
 	var productList = [];
@@ -109,8 +141,6 @@ var scrape = async function (url, name, pageNo){
 		}
 		catch(err) { }
 	}
-
-	console.log('page # ' + (pageNo+1) + ' completed.');
 
 	return Promise.resolve();
 }
